@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Note, NoteTag } from '../types/note';
+import type { Note, NewNote } from '../types/note';
 
 const myKey = import.meta.env.VITE_NOTEHUB_TOKEN;
 
@@ -29,7 +29,7 @@ export const fetchNotes = async (
   return res.data;
 };
 
-export const createNote = async (newNote: NoteTag) => {
+export const createNote = async (newNote: NewNote) => {
   const config = {
     headers: {
       Authorization: `Bearer ${myKey}`,

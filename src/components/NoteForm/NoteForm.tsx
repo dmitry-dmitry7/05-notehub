@@ -5,47 +5,47 @@ import * as Yup from 'yup';
 
 import css from './NoteForm.module.css';
 import { createNote } from '../../services/noteService';
-import type { NoteTag } from '../../types/note';
+import type { NewNote } from '../../types/note';
 
 interface NoteFormProps {
-  onAddForm: () => void;
+  onClose: () => void;
 }
 
 const OrderFormSchema = Yup.object().shape({
   title: Yup.string()
-    .min(3, 'Username too short')
-    .max(50, 'Username too long')
+    .min(3, 'Title too short')
+    .max(50, 'Title too long')
     .required('This is a required field!'),
-  content: Yup.string().max(500, 'Username too long'),
+  content: Yup.string().max(500, 'Content too long'),
   tag: Yup.string()
     .oneOf(['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'])
     .required(),
 });
 
-const initialValues: NoteTag = {
+const initialValues: NewNote = {
   title: '',
   content: '',
   tag: 'Todo',
 };
 
-export default function NoteForm({ onAddForm }: NoteFormProps) {
+export default function NoteForm({ onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: createNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
-      onAddForm();
+      onClose();
     },
   });
 
   const fieldId = useId();
 
-  const handleSubmit = (
-    values: NoteTag,
-    formikHelpers: FormikHelpers<NoteTag>
+  const handleSubmit = async (
+    values: NewNote,
+    formikHelpers: FormikHelpers<NewNote>
   ) => {
-    mutation.mutateAsync({
+    await mutation.mutateAsync({
       title: values.title,
       content: values.content,
       tag: values.tag,
@@ -103,11 +103,7 @@ export default function NoteForm({ onAddForm }: NoteFormProps) {
         </div>
 
         <div className={css.actions}>
-          <button
-            type="button"
-            className={css.cancelButton}
-            onClick={onAddForm}
-          >
+          <button type="button" className={css.cancelButton} onClick={onClose}>
             Cancel
           </button>
           <button type="submit" className={css.submitButton} disabled={false}>

@@ -21,14 +21,20 @@ export default function Modal({ onClose, children }: ModalProps) {
       }
     };
 
-    // console.log('addEventListener');
     document.addEventListener('keydown', handleKeydown);
 
     return () => {
-      // console.log('removeEventListener');
       document.removeEventListener('keydown', handleKeydown);
     };
   }, [onClose]);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
 
   return createPortal(
     <div
